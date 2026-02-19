@@ -228,7 +228,7 @@ const app = express();
 app.use(express.json());
 
 //  الاتصال بقاعدة البيانات
-mongoose.connect("mongodb://mongo:zLDVgczekhTNwayrUTVIVxAGyttGxKmQ@mongodb.railway.internal:27017")
+mongoose.connect("mmongodb://mongo:IhxjmqwfSUSEuaCsOfbGvzFBYmglKZRt@mongodb.railway.internal:27017")
   .then(() => console.log(" Connected to MongoDB"))
   .catch((err) => console.log(" Connection Error:", err));
 
@@ -333,7 +333,7 @@ app.post("/api/scan", async (req, res) => {
 
 
 //لكل موظف QR فيها html عرض صفحة 
-const publicUrl="https://attendance-system-production-526b.up.railway.app/employees"
+const publicUrl="https://qrtask-production.up.railway.app.app/employees"
 app.get("/employees", async (req, res) => {
   try {
     const employees = await Employee.find();
