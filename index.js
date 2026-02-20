@@ -545,7 +545,7 @@ app.get("/employees", async (req, res) => {
     }
 
       const employeeQRs = await Promise.all(
-        employees.slice(0,1).map(async (emp) => {
+        employees.map(async (emp) => {
         const qrLink = `https://qrtask-production.up.railway.app/api/scan?qr_code=${emp.qr_code}`;
         const qrImage = await QRCode.toDataURL(qrLink);
 
