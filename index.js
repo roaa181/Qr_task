@@ -553,24 +553,51 @@ app.get("/employees", async (req, res) => {
       })
     );
 
-    let html = `
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Employee QR Codes</title>
-      </head>
-      <body>
-        <h2>Employee QR Codes</h2>
-        ${employeeQRs.map(emp => `
-          <div style="margin:10px;">
-            <strong>${emp.name}</strong><br>
-            <small>${emp.email}</small><br>
-            <img src="${emp.qrImage}" alt="QR for ${emp.name}">
-          </div>
-        `).join("")}
-      </body>
-      </html>
-    `;
+   let html = `
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Employee QR Codes</title>
+  <style>
+    body { font-family: Arial; background:#f8f9fa; padding:20px; }
+    h2 { text-align:center; }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      padding: 15px;
+      width: 180px;
+      text-align: center;
+    }
+    .card img {
+      width: 150px;
+      height: 150px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Employee QR Codes</h2>
+  <div class="grid">
+    ${employeeQRs.map(emp => `
+      <div class="card">
+        <strong>${emp.name}</strong><br>
+        <small>${emp.email}</small><br>
+        <img src="${emp.qrImage}" alt="QR for ${emp.name}">
+      </div>
+    `).join("")}
+  </div>
+</body>
+</html>
+`;
+
+res.send(html);
     res.send(html);
 
   } catch (err) {
