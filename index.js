@@ -433,7 +433,7 @@ const employeeSchema = new mongoose.Schema({
   email: String,
   password: String,
   rfid_code: Number,
-  qr_code: Number,
+  qr_code: String,
 });
 const Employee = mongoose.model("Employee", employeeSchema);
 
