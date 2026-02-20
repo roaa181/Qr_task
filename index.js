@@ -544,14 +544,26 @@ app.get("/employees", async (req, res) => {
       return res.send("<h3>لا يوجد موظفين</h3>");
     }
 
-      const employeeQRs = await Promise.all(
-        employees.map(async (emp) => {
-        const qrLink = `https://qrtask-production.up.railway.app/api/scan?qr_code=${emp.qr_code}`;
-        const qrImage = await QRCode.toDataURL(qrLink);
+    const employeeQRs = await Promise.all(
+  employees.map(async (emp) => {
 
-        return { name: emp.name, email: emp.email, qrImage };
-      })
-    );
+    const qrImage = await QRCode.toDataURL(emp.qr_code.toString());
+
+    return { 
+      name: emp.name, 
+      email: emp.email, 
+      qrImage 
+    };
+  })
+);
+    //   const employeeQRs = await Promise.all(
+    //     employees.map(async (emp) => {
+    //     const qrLink = `https://qrtask-production.up.railway.app/api/scan?qr_code=${emp.qr_code}`;
+    //     const qrImage = await QRCode.toDataURL(qrLink);
+
+    //     return { name: emp.name, email: emp.email, qrImage };
+    //   })
+    // );
 
    let html = `
 <html>
