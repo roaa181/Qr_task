@@ -1,4 +1,4 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar">
 <head>
   <meta charset="UTF-8" />
@@ -13,11 +13,11 @@
   <script>
     function onScanSuccess(decodedText) {
       // لما يتم قراءة الكود، نبعت القيمه للـ API
-      fetch("http://localhost:3000/api/scan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ qr_code: decodedText })
-      })
+         fetch("https://qrtask-production.up.railway.app/api/scan", {
+         method: "POST",
+          headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({ qr_code: decodedText })
+       })
         .then(res => res.json())
         .then(data => {
           document.getElementById("result").innerText = data.message;
@@ -36,4 +36,4 @@
     );
   </script>
 </body>
-</html> -->
+</html>
