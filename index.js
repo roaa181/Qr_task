@@ -486,7 +486,12 @@ async function insertEmployeesOnce() {
 // =======================
 async function recordAttendance(qr_code, method = "QR") {
   try {
-    const employee = await Employee.findOne({ qr_code });
+            console.log("QR Received:", qr_code);
+
+    const employee = await Employee.findOne({ 
+      qr_code: Number(qr_code)
+    });
+    
     if (!employee) return console.log("الموظف غير موجود");
 
     const today = moment().format("YYYY-MM-DD");
