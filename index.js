@@ -416,7 +416,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 // =======================
-// الاتصال بقاعدة البيانات (استبدلي هنا برابطك من Railway)
+
 // =======================
 const MONGO_URL = process.env.MONGO_URL || "mongodb://mongo:IhxjmqwfSUSEuaCsOfbGvzFBYmglKZRt@gondola.proxy.rlwy.net:40218";
 
@@ -441,7 +441,10 @@ const Employee = mongoose.model("Employee", employeeSchema);
 // نموذج الحضور والانصراف
 // =======================
 const attendanceSchema = new mongoose.Schema({
-  employee_id: String,
+ employee_id: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Employee"
+},
   date: String,
   time_in: String,
   time_out: String,
@@ -484,21 +487,35 @@ async function insertEmployeesOnce() {
 // =======================
 // تسجيل الحضور والانصراف
 // =======================
-async function recordAttendance(qr_code, method = "QR") {
+       async function recordAttendance(qr_code, method = "QR") {
   try {
-            console.log("QR Received:", qr_code);
 
-    const employee = await Employee.findOne({ 
-      qr_code: Number(qr_code)
+    // 🔥 ننضف القيمة من أي مسافات أو Enter
+    const cleanCode = qr_code.toString().trim();
+
+    console.log("QR Received:", cleanCode);
+
+    // 🔥 نحولها لرقم عشان تطابق اللي في DB
+    const employee = await Employee.findOne({
+      qr_code: Number(cleanCode)
     });
-    
-    if (!employee) return console.log("الموظف غير موجود");
+
+    if (!employee) {
+      console.log("Employee NOT found");
+      return { success: false, message: "Employee not found" };
+    }
+
+    console.log("Employee Found:", employee.name);
 
     const today = moment().format("YYYY-MM-DD");
     const currentTime = moment().format("HH:mm:ss");
 
-    let attendance = await Attendance.findOne({ employee_id: employee._id, date: today });
+    let attendance = await Attendance.findOne({
+      employee_id: employee._id,
+      date: today
+    });
 
+    // تسجيل حضور
     if (!attendance) {
       attendance = new Attendance({
         employee_id: employee._id,
@@ -507,32 +524,57 @@ async function recordAttendance(qr_code, method = "QR") {
         time_out: "",
         method,
       });
+
       await attendance.save();
-      console.log(`تم تسجيل حضور ${employee.name} الساعة ${currentTime}`);
-    } else if (!attendance.time_out) {
+      console.log("Saved Check-in");
+
+      return {
+        success: true,
+        type: "check-in",
+        employee: employee.name,
+        time: currentTime
+      };
+    }
+
+    // تسجيل انصراف
+    else if (!attendance.time_out) {
       attendance.time_out = currentTime;
       await attendance.save();
-      console.log(`تم تسجيل انصراف ${employee.name} الساعة ${currentTime}`);
+
+      console.log("Saved Check-out");
+
+      return {
+        success: true,
+        type: "check-out",
+        employee: employee.name,
+        time: currentTime
+      };
     }
+
+    return { success: false, message: "Already completed today" };
+
   } catch (err) {
-    console.log("خطأ أثناء تسجيل الحضور/الانصراف:", err.message);
+    console.log("ERROR:", err);
+    return { success: false, message: "Server error" };
   }
 }
 
 // =======================
 // API استلام QR من الفرونت
 // =======================
-app.post("/api/scan", async (req, res) => {
-  try {
-    const { qr_code } = req.body;
-    if (!qr_code) return res.status(400).json({ message: "QR code مفقود" });
+  app.post("/api/scan", async (req, res) => {
 
-    await recordAttendance(qr_code, "QR");
-    res.json({ message: "تم تسجيل الحضور أو الانصراف بنجاح" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "حدث خطأ أثناء التسجيل" });
+  console.log("BODY:", req.body);
+
+  const { qr_code } = req.body;
+
+  if (!qr_code) {
+    return res.json({ success: false, message: "QR missing" });
   }
+
+  const result = await recordAttendance(qr_code);
+
+  res.json(result);
 });
 
 // =======================
