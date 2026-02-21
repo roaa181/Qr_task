@@ -618,7 +618,7 @@ app.get("/employees", async (req, res) => {
   <meta charset="UTF-8">
   <title>Employee QR Codes</title>
   <style>
-    body { font-family: Arial; background:#f8f9fd; padding:20px; }
+    body { font-family: Arial; background:#f8f9fa; padding:20px; }
     h2 { text-align:center; }
     .grid {
       display: flex;
@@ -639,6 +639,12 @@ app.get("/employees", async (req, res) => {
       height: 150px;
       margin-top: 10px;
     }
+      const qrImage = await QRCode.toDataURL(emp.qr_code.toString(), {
+  color: {
+    dark: "#1e3a8a",   // لون المربعات (مثلاً أزرق غامق)
+    light: "#ffffff"  // لون الخلفية
+  }
+});
   </style>
 </head>
 <body>
