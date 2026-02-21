@@ -627,9 +627,9 @@ app.get("/employees", async (req, res) => {
       gap: 15px;
     }
     .card {
-      background: white;
+      background: blue;
       border-radius: 10px;
-      box-shadow: 0 0 5px rgba(238, 94, 209, 0.1);
+      box-shadow: 0 0 5px rgba(232, 100, 206, 0.1);
       padding: 15px;
       width: 180px;
       text-align: center;
