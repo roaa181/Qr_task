@@ -618,7 +618,7 @@ app.get("/employees", async (req, res) => {
   <meta charset="UTF-8">
   <title>Employee QR Codes</title>
   <style>
-    body { font-family: Arial; background:#f8f9fa; padding:20px; }
+    body { font-family: Arial; background:#f8f9fd; padding:20px; }
     h2 { text-align:center; }
     .grid {
       display: flex;
@@ -627,9 +627,9 @@ app.get("/employees", async (req, res) => {
       gap: 15px;
     }
     .card {
-      background: blue;
+      background: white;
       border-radius: 10px;
-      box-shadow: 0 0 5px rgba(232, 100, 206, 0.1);
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
       padding: 15px;
       width: 180px;
       text-align: center;
