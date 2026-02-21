@@ -490,12 +490,12 @@ async function insertEmployeesOnce() {
        async function recordAttendance(qr_code, method = "QR") {
   try {
 
-    // 🔥 ننضف القيمة من أي مسافات أو Enter
+    // ننضف القيمة من أي مسافات أو Enter
     const cleanCode = qr_code.toString().trim();
 
     console.log("QR Received:", cleanCode);
 
-    // 🔥 نحولها لرقم عشان تطابق اللي في DB
+    // نحولها لرقم عشان تطابق اللي في DB
     const employee = await Employee.findOne({
       qr_code: Number(cleanCode)
     });
@@ -629,7 +629,7 @@ app.get("/employees", async (req, res) => {
     .card {
       background: white;
       border-radius: 10px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      box-shadow: 0 0 5px rgba(238, 94, 209, 0.1);
       padding: 15px;
       width: 180px;
       text-align: center;
