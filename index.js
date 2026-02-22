@@ -595,8 +595,8 @@ app.get("/employees", async (req, res) => {
   employees.map(async (emp) => {
     const qrImage = await QRCode.toDataURL(emp.qr_code.toString(), {
       color: {
-        dark: "#7c3aed",
-        light: "#f3e8ff"
+        dark: "#392a53",
+        light: "#0000" // خلفية شفافة
       }
     });
 
