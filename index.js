@@ -593,8 +593,17 @@ app.get("/employees", async (req, res) => {
 
     const employeeQRs = await Promise.all(
   employees.map(async (emp) => {
+    const qrImage = await QRCode.toDataURL(emp.qr_code.toString(), {
+  color: 
+   {
+  color: {
+    dark: "#7c3aed",
+    light: "#f3e8ff"
+  }
+}  // لون الخلفية
+  
+});
 
-    const qrImage = await QRCode.toDataURL(emp.qr_code.toString());
 
     return { 
       name: emp.name, 
@@ -639,12 +648,7 @@ app.get("/employees", async (req, res) => {
       height: 150px;
       margin-top: 10px;
     }
-      const qrImage = await QRCode.toDataURL(emp.qr_code.toString(), {
-  color: {
-    dark: "#1e3a8a",   // لون المربعات (مثلاً أزرق غامق)
-    light: "#ffffff"  // لون الخلفية
-  }
-});
+
   </style>
 </head>
 <body>
