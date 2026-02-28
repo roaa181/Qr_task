@@ -605,14 +605,6 @@ app.get("/employees", async (req, res) => {
     };
   })
 );
-    //   const employeeQRs = await Promise.all(
-    //     employees.map(async (emp) => {
-    //     const qrLink = `https://qrtask-production.up.railway.app/api/scan?qr_code=${emp.qr_code}`;
-    //     const qrImage = await QRCode.toDataURL(qrLink);
-
-    //     return { name: emp.name, email: emp.email, qrImage };
-    //   })
-    // );
 
    let html = `
 <html>
@@ -660,7 +652,7 @@ app.get("/employees", async (req, res) => {
 `;
 
 res.send(html);
-    res.send(html);
+ 
 
   } catch (err) {
     console.error("Error:", err);
@@ -677,12 +669,60 @@ app.get("/", (req, res) => res.redirect("/employees"));
 // =======================
 // SCAN عبر رابط
 // =======================
-app.get("/api/scan", async (req, res) => {
-  const { qr_code } = req.query;
-  if (!qr_code) return res.send("QR code مفقود");
+app.get("/scan", (req, res) => {
+  res.send(`
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="UTF-8">
+    <title>QR Scanner</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+      body { font-family: Arial; text-align: center; background:#f4f6f9; }
+      #reader { width: 300px; margin: auto; }
+      h2 { margin-top: 20px; }
+    </style>
+  </head>
+  <body>
+    <h2>Scan QR Code</h2>
+    <div id="reader"></div>
+    <p id="result"></p>
 
-  await recordAttendance(qr_code, "QR");
-  res.send("تم تسجيل الحضور أو الانصراف بنجاح!");
+    <script>
+      const resultElement = document.getElementById("result");
+
+      function onScanSuccess(decodedText) {
+        html5QrcodeScanner.clear();
+
+        fetch("/api/scan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ qr_code: decodedText })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if(data.success){
+            resultElement.innerHTML =
+              "✅ " + data.type + " - " + data.employee + " at " + data.time;
+          } else {
+            resultElement.innerHTML = "❌ " + data.message;
+          }
+        })
+        .catch(() => {
+          resultElement.innerHTML = "❌ Server Error";
+        });
+      }
+
+      const html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader",
+        { fps: 10, qrbox: 250 }
+      );
+
+      html5QrcodeScanner.render(onScanSuccess);
+    </script>
+  </body>
+  </html>
+  `);
 });
 
 // =======================
