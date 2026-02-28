@@ -593,13 +593,15 @@ app.get("/employees", async (req, res) => {
 
     const employeeQRs = await Promise.all(
   employees.map(async (emp) => {
+       const qrLink = `https://qrtask-production.up.railway.app/api/scan?qr_code=${emp.qr_code}`;
 
     const qrImage = await QRCode.toDataURL(emp.qr_code.toString());
 
     return { 
       name: emp.name, 
       email: emp.email, 
-      qrImage 
+      qrImage ,
+      qrLink
     };
   })
 );
@@ -683,49 +685,6 @@ app.get("/api/scan", async (req, res) => {
   res.send("تم تسجيل الحضور أو الانصراف بنجاح!");
 });
 
-// =======================
-// صفحة الاسكانر (Scan Page)
-// =======================
-app.get("/scan", (req, res) => {
-  res.send(`
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <title>QR Scanner</title>
-      <style>
-        body { font-family: Arial; text-align:center; margin-top:50px; }
-        input { padding:10px; font-size:18px; width:250px; text-align:center; }
-        #result { margin-top:20px; font-weight:bold; }
-      </style>
-    </head>
-    <body>
-      <h2>امسح كود الـ QR</h2>
-      <input type="text" id="qrInput" autofocus placeholder="Scan QR هنا" />
-      <div id="result"></div>
-
-      <script>
-        const input = document.getElementById("qrInput");
-
-        input.addEventListener("keypress", function(event) {
-          if (event.key === "Enter") {
-            const qrCode = input.value;
-
-            fetch("/api/scan?qr_code=" + qrCode)
-              .then(res => res.text())
-              .then(data => {
-                document.getElementById("result").innerText = data;
-                input.value = "";
-              })
-              .catch(err => {
-                document.getElementById("result").innerText = "حدث خطأ ❌";
-              });
-          }
-        });
-      </script>
-    </body>
-    </html>
-  `);
-});
 // =======================
 // تشغيل السيرفر
 // =======================
